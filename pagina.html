@@ -25,7 +25,7 @@
             // Preencher valores de retorno_acumulado e volatilidade
             const retornos = datas.map(date => retornoData[date]?.retorno_acumulado || 0);
             const volatilidade = datas.map(date => 
-                volatilidadeData[date]?.volatilidade || null // Use null para lacunas
+                volatilidadeData[date]?.volatilidade_media || null // Use null para lacunas
             );
 
             // Gráfico de Retorno Acumulado
