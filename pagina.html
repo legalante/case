@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"> <!-- Tag viewport adicionada -->
+    <title>Retorno Acumulado e Volatilidade</title>
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+</head>
+<body>
+    <h1>Gráficos</h1>
+    <div id="retorno-acumulado" style="height: 400px;"></div>
+    <div id="volatilidade" style="height: 400px;"></div>
+
+    <script>
+        // Carregar os dados de retorno acumulado e volatilidade
+        Promise.all([
+            fetch("https://legalante.github.io/case/retorno_acumulado.json").then(response => {
+                if (!response.ok) {
+                    console.error("Erro ao carregar retorno_acumulado.json");
+                }
+                return response.json();
+            }),
+            fetch("https://legalante.github.io/case/volatilidade.json").then(response => {
+                if (!response.ok) {
+                    console.error("Erro ao carregar volatilidade.json");
+                }
+                return response.json();
+            })
+        ])
+        .then(([retornoData, volatilidadeData]) => {
+            console.log("Dados de retorno acumulado:", retornoData);
+            console.log("Dados de volatilidade:", volatilidadeData);
+
+            // Converter as datas para um formato simples, como "YYYY-MM-DD"
+            const datas = Object.keys(retornoData).map(date => {
+                const dateObj = new Date(date);  // Converte a string para objeto Date
+                return dateObj.toISOString().split('T')[0];  // Formato YYYY-MM-DD
+            });
+
+            // Obter os valores de retorno acumulado e volatilidade
+            const retornos = datas.map(date => retornoData[date].retorno_acumulado);
+            const volatilidade = datas.map(date => volatilidadeData[date].volatilidade_media);
+
+            // Verificar se há dados para plotar
+            if (datas.length === 0 || retornos.length === 0 || volatilidade.length === 0) {
+                console.error("Dados vazios ou mal formatados.");
+                return;
+            }
+
+            // Gráfico de Retorno Acumulado
+            Plotly.newPlot("retorno-acumulado", [{
+                x: datas,
+                y: retornos,
+                type: 'scatter',
+                mode: 'lines',
+                name: 'Retorno Acumulado'
+            }]);
+
+            // Gráfico de Volatilidade
+            Plotly.newPlot("volatilidade", [{
+                x: datas,
+                y: volatilidade,
+                type: 'scatter',
+                mode: 'lines',
+                name: 'Volatilidade Média'
+            }]);
+        })
+        .catch(error => {
+            console.error('Erro ao carregar os dados:', error);
+        });
+    </script>
+</body>
+</html>
