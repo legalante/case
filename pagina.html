@@ -17,10 +17,14 @@
             fetch("volatilidade.json").then(response => response.json())
         ])
         .then(([retornoData, volatilidadeData]) => {
-            // Processar os dados
+            // Obter todas as datas de retorno_acumulado
             const datas = Object.keys(retornoData);
-            const retornos = datas.map(date => retornoData[date].retorno_acumulado);
-            const volatilidade = datas.map(date => volatilidadeData[date].volatilidade_media);
+
+            // Preencher valores de retorno_acumulado e volatilidade
+            const retornos = datas.map(date => retornoData[date]?.retorno_acumulado || 0);
+            const volatilidade = datas.map(date => 
+                volatilidadeData[date]?.volatilidade_media || null // Use null para lacunas
+            );
 
             // Gráfico de Retorno Acumulado
             Plotly.newPlot("retorno-acumulado", [{
