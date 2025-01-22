@@ -1,7 +1,7 @@
 import requests  # Para pegar dados da API
 
 # URL da API com a chave demo
-url = "https://www.alphavantage.co/query"
+url = "https://www.alphavantage.co/query" 
 params = {
     "function": "TIME_SERIES_DAILY",
     "symbol": "IBM",
@@ -33,31 +33,6 @@ df["retorno_acumulado"] = (1 + df["retorno_diario"]).cumprod() - 1
 
 # Calcular volatilidade média
 df["volatilidade_media"] = df["retorno_diario"].rolling(window=20).std()
-
-#print(df.head(100))  # Olhe os resultados iniciais
-
-retornos_diarios = []
-precos = df["close"].tolist()
-for i in range(1, len(precos)):
-    retorno = (precos[i] - precos[i-1]) / precos[i-1]
-    retornos_diarios.append(retorno)
-
-retorno_acumulado = []
-acumulado = 1
-for retorno in retornos_diarios:
-    acumulado *= (1 + retorno)
-    retorno_acumulado.append(acumulado - 1)
-
-import math
-
-def calcula_volatilidade(retornos, janela):
-    volatilidades = []
-    for i in range(len(retornos) - janela + 1):
-        janela_atual = retornos[i:i+janela]
-        media = sum(janela_atual) / janela
-        desvio = math.sqrt(sum((x - media) ** 2 for x in janela_atual) / janela)
-        volatilidades.append(desvio)
-    return volatilidades
 
 print(df.head(100))  # Olhe os resultados iniciais
 
