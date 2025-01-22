@@ -3,49 +3,63 @@
 <head>
     <meta charset="UTF-8">
     <title>Retorno Acumulado e Volatilidade</title>
+    <!-- Inclui a biblioteca Plotly para criação de gráficos interativos -->
     <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
 </head>
 <body>
+    <!-- Título principal da página -->
     <h1>Gráficos</h1>
+    
+    <!-- Subtítulo para o gráfico de Retorno Acumulado -->
     <h2>Retorno acumulado</h2>
+    
+    <!-- Div onde o gráfico de Retorno Acumulado será exibido -->
     <div id="retorno-acumulado" style="height: 400px;"></div>
+    
+    <!-- Subtítulo para o gráfico de Volatilidade Média -->
     <h2>Volatilidade média</h2>
+    
+    <!-- Div onde o gráfico de Volatilidade Média será exibido -->
     <div id="volatilidade" style="height: 400px;"></div>
 
     <script>
         // Carregar os dados de retorno acumulado e volatilidade
         Promise.all([
+            // Faz a requisição dos dados de "retorno_acumulado.json" e converte a resposta em JSON
             fetch("retorno_acumulado.json").then(response => response.json()),
+            // Faz a requisição dos dados de "volatilidade.json" e converte a resposta em JSON
             fetch("volatilidade.json").then(response => response.json())
         ])
         .then(([retornoData, volatilidadeData]) => {
             // Obter todas as datas de retorno_acumulado
             const datas = Object.keys(retornoData);
 
-            // Preencher valores de retorno_acumulado e volatilidade
+            // Preencher os valores de retorno acumulado, usando 0 caso a chave não exista no dado
             const retornos = datas.map(date => retornoData[date]?.retorno_acumulado || 0);
+            // Preencher os valores de volatilidade, usando null caso a chave não exista no dado
             const volatilidade = datas.map(date => 
-                volatilidadeData[date]?.volatilidade_media || null // Use null para lacunas (devido à janela móvel há menos dias com dados em volatilidade média do que em retorno acumulado)
+                volatilidadeData[date]?.volatilidade_media || null // Usando null para lacunas
             );
 
-            // Gráfico de Retorno Acumulado
+            // Criar o gráfico de Retorno Acumulado utilizando o Plotly
             Plotly.newPlot("retorno-acumulado", [{
-                x: datas,
-                y: retornos,
-                type: 'scatter',
-                mode: 'lines',
-                name: 'Retorno Acumulado'
+                x: datas, // As datas serão o eixo X
+                y: retornos, // Os valores de retorno acumulado serão o eixo Y
+                type: 'scatter', // Tipo de gráfico de dispersão
+                mode: 'lines', // Os dados serão mostrados em formato de linha
+                name: 'Retorno Acumulado' // Nome da linha no gráfico
             }]);
 
-            // Gráfico de Volatilidade
+            // Criar o gráfico de Volatilidade utilizando o Plotly
             Plotly.newPlot("volatilidade", [{
-                x: datas,
-                y: volatilidade,
-                type: 'scatter',
-                mode: 'lines',
-                name: 'Volatilidade Média'
+                x: datas, // As datas serão o eixo X
+                y: volatilidade, // Os valores de volatilidade serão o eixo Y
+                type: 'scatter', // Tipo de gráfico de dispersão
+                mode: 'lines', // Os dados serão mostrados em formato de linha
+                name: 'Volatilidade Média' // Nome da linha no gráfico
             }]);
         })
+        // Caso ocorra um erro ao carregar os dados, o erro será exibido no console
         .catch(error => console.error('Erro ao carregar os dados:', error));
     </script>
 </body>
