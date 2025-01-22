@@ -26,9 +26,9 @@
         // Carregar os dados de retorno acumulado e volatilidade
         Promise.all([
             // Faz a requisição dos dados de "retorno_acumulado.json" e converte a resposta em JSON
-            fetch("./retorno_acumulado.json").then(response => response.json()),
+            fetch("https://legalante.github.io/case/retorno_acumulado.json").then(response => response.json()),
             // Faz a requisição dos dados de "volatilidade.json" e converte a resposta em JSON
-            fetch("./volatilidade.json").then(response => response.json())
+            fetch("https://legalante.github.io/case/volatilidade.json").then(response => response.json())
         ])
         .then(([retornoData, volatilidadeData]) => {
             // Obter todas as datas de retorno_acumulado
